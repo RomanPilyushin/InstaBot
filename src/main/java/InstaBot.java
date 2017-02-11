@@ -57,7 +57,7 @@ public class InstaBot extends TelegramLongPollingBot {
         }
 
         if (message != null && message.hasText()) {
-            if (message.hasText() && message.getText().equals("durov")) {
+            if (message.hasText() && message.getText().toLowerCase().equals("durov")) {
                 sendMsg(message, "https://www.instagram.com/p/BP8FP56FA1l/");
             } else {
                 sendMsg(message, "Error! Try again");

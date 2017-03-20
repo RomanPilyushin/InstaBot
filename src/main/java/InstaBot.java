@@ -40,6 +40,7 @@ public class InstaBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
         String accountName = message.getText();
+        if (accountName.startsWith("@")) accountName = accountName.substring(1, accountName.length());
         Account account;
 
         try {

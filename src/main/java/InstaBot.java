@@ -11,11 +11,12 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.io.IOException;
+import java.util.List;
 
 public class InstaBot extends TelegramLongPollingBot {
     private static final String TOKEN = "285523816:AAEEvJKTs-AovM1-xLQzIIyFD8q13dx-Sho";
     private static final String NAME = "InstaGetPhotoBot";
-    private Instagram instagram = new Instagram();
+    private static Instagram instagram = new Instagram();
 
     public static void main(String[] args) {
         ApiContextInitializer.init();
@@ -38,30 +39,37 @@ public class InstaBot extends TelegramLongPollingBot {
 
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
-
+        String accountName = message.getText();
         Account account;
+
         try {
-            account = instagram.getAccountByUsername("durov");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InstagramException e) {
-            e.printStackTrace();
-        }
-        Media media = null;
-        try {
-            media = instagram.getMediaByUrl("https://www.instagram.com/p/BP8FP56FA1l/");
+            account = instagram.getAccountByUsername(accountName);
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InstagramException e) {
             e.printStackTrace();
         }
 
-        if (message != null && message.hasText()) {
-            if (message.hasText() && message.getText().toLowerCase().equals("durov")) {
-                sendMsg(message, "https://www.instagram.com/p/BP8FP56FA1l/");
-            } else {
-                sendMsg(message, "Error! Try again");
-            }
+        //Media media = null;
+        List<Media> medias = null;
+        try {
+            //media = instagram.getMediaByUrl("https://www.instagram.com/p/BP8FP56FA1l/");
+
+            medias = instagram.getMedias(accountName, 1);
+            //System.out.println(medias.get(0).code);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InstagramException e) {
+            e.printStackTrace();
+        }
+
+        //  || message.getText().toLowerCase().equals("durov")
+        if (!message.hasText()) {
+            sendMsg(message, "Error! Try again");
+        } else {
+            //sendMsg(message, medias != null ? medias.get(0).imageHighResolutionUrl : null);
+            sendMsg(message, medias != null ? "https://www.instagram.com/p/" + medias.get(0).code : null);
         }
     }
 
